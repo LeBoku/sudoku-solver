@@ -5,8 +5,22 @@ from generator import generate_board
 
 def show_board_cmd(board):
     """ shows the board in the cmd """
-    for row in board.rows:
-        print(*[cell.value for cell in row], sep="  ")
+    for index, row in enumerate(board.rows):
+        for cell_index, cell in enumerate(row):
+            print(" " + str(cell.value) + " ", end="")
+
+            if (cell_index + 1) % 3 == 0 and cell_index + 1 is not board.size:
+                print("|", end="")
+
+        print()
+
+        if (index + 1) % 3 == 0 and index + 1 is not board.size:
+            for i in range(board.size):
+                print("---", end="")
+                if(i + 1) % 3 == 0 and i + 1 is not board.size:
+                    print("|", end="")
+            print()
+
 
 if __name__ == "__main__":
     show_board_cmd(generate_board(9))
