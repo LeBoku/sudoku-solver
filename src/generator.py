@@ -43,4 +43,17 @@ def generate_board():
                 filled_cell.value = 0
                 cells_to_fill.append(filled_cell)
 
+    remove_values(board, 40)
+
     return board
+
+
+def remove_values(board, amount):
+    """ removes the given amount of values from the board """
+    for i in range(amount):
+        while True:
+            cell = choice(board.cells)
+
+            if cell.value != 0:
+                cell.value = 0
+                break
