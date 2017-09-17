@@ -38,10 +38,8 @@ def generate_board():
             cell.value = choice(cell_posibilities)
         else:
             cells_to_fill.append(cell)
-            to_reset = [
-                c for c in choice([row, column, square]) if c.value != 0]
 
-            for filled_cell in to_reset:
+            for filled_cell in [c for c in choice([row, column, square]) if c.value != 0]:
                 filled_cell.value = 0
                 cells_to_fill.append(filled_cell)
 

@@ -7,7 +7,7 @@ def show_board_in_cmd(board):
     """ shows the board in the cmd """
     for index, row in enumerate(board.rows):
         for cell_index, cell in enumerate(row):
-            print(" " + str(cell.value) + " ", end="")
+            print(" " + str(cell.value if cell.value != 0 else "_") + " ", end="")
 
             if (cell_index + 1) % 3 == 0 and cell_index + 1 is not board.size:
                 print("|", end="")
