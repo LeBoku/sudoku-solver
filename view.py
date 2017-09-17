@@ -23,4 +23,4 @@ def show_board_in_cmd(board):
 
 
 if __name__ == "__main__":
-    show_board_in_cmd(generate_board(9))
+    show_board_in_cmd(generate_board())

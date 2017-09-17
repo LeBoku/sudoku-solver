@@ -4,7 +4,7 @@
 class Board:
     """ A Sudoku-board """
 
-    def __init__(self, size):
+    def __init__(self, size=9):
         self.size = size
         self.cells = [Cell(0, i % size, (i // size))
                       for i in range(size * size)]
@@ -62,5 +62,5 @@ class Cell:
         """ square position of a cell"""
         return (self.pos[0] // 3, self.pos[1] // 3)
 
-    def __repr__(self):
-        return self.pos + ": " + self.value
+    def __str__(self):
+        return str(self.pos) + ": " + str(self.value)
