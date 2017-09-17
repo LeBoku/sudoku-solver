@@ -15,19 +15,29 @@ class Board:
         rows = [[] for i in range(self.size)]
 
         for cell in self.cells:
-            rows[cell.pos[1]].append(cell)
+            rows[cell.pos_vertical].append(cell)
 
         return rows
 
     @property
     def columns(self):
-        """ returns the cells grouped by rows """
+        """ returns the cells grouped by collumns """
         columns = [[] for i in range(self.size)]
 
         for cell in self.cells:
-            columns[cell.pos[0]].append(cell)
+            columns[cell.pos_horizontal].append(cell)
 
         return columns
+
+    @property
+    def squares(self):
+        """ returns the cells grouped by squares """
+        squares = {(i // 3, i % 3): [] for i in range(self.size)}
+
+        for cell in self.cells:
+            squares[cell.square].append(cell)
+
+        return squares
 
 
 class Cell:
@@ -36,3 +46,21 @@ class Cell:
     def __init__(self, value, x, y):
         self.value = value
         self.pos = x, y
+
+    @property
+    def pos_vertical(self):
+        """ horizontal position of a cell"""
+        return self.pos[1]
+
+    @property
+    def pos_horizontal(self):
+        """ vertical position of a cell"""
+        return self.pos[0]
+
+    @property
+    def square(self):
+        """ square position of a cell"""
+        return (self.pos[0] // 3, self.pos[1] // 3)
+
+    def __repr__(self):
+        return self.pos + ": " + self.value

@@ -3,7 +3,7 @@
 from generator import generate_board
 
 
-def show_board_cmd(board):
+def show_board_in_cmd(board):
     """ shows the board in the cmd """
     for index, row in enumerate(board.rows):
         for cell_index, cell in enumerate(row):
@@ -23,4 +23,4 @@ def show_board_cmd(board):
 
 
 if __name__ == "__main__":
-    show_board_cmd(generate_board(9))
+    show_board_in_cmd(generate_board(9))
