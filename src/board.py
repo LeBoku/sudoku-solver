@@ -1,18 +1,22 @@
 """ Classes to Represent the state of the Sudoku board """
 
+import math
+
 
 class Board:
     """ A Sudoku-board """
 
     def __init__(self, size=9):
         self.size = size
-        self.cells = [Cell(0, i % size, (i // size))
+        self.square_size = 3
+        self.square_count = size // self.square_size
+        self.cells = [Cell(0, i % size + 1, (i // size) + 1)
                       for i in range(size * size)]
 
     @property
     def rows(self):
         """ returns the cells grouped by rows """
-        rows = [[] for i in range(self.size)]
+        rows = {i + 1: [] for i in range(self.size)}
 
         for cell in self.cells:
             rows[cell.pos_vertical].append(cell)
@@ -22,7 +26,7 @@ class Board:
     @property
     def columns(self):
         """ returns the cells grouped by collumns """
-        columns = [[] for i in range(self.size)]
+        columns = {i + 1: [] for i in range(self.size)}
 
         for cell in self.cells:
             columns[cell.pos_horizontal].append(cell)
@@ -32,7 +36,7 @@ class Board:
     @property
     def squares(self):
         """ returns the cells grouped by squares """
-        squares = {(i // 3, i % 3): [] for i in range(self.size)}
+        squares = {(i // 3 + 1, i % 3 + 1): [] for i in range(self.size)}
 
         for cell in self.cells:
             squares[cell.square].append(cell)
@@ -60,7 +64,4 @@ class Cell:
     @property
     def square(self):
         """ square position of a cell"""
-        return (self.pos[0] // 3, self.pos[1] // 3)
-
-    def __str__(self):
-        return str(self.pos) + ": " + str(self.value)
+        return (math.ceil(self.pos[0] / 3), math.ceil(self.pos[1] / 3))

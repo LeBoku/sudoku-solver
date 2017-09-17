@@ -2,24 +2,26 @@
 
 from generator import generate_board
 
+VERTICAL_DIVIDER = "|"
+HORIZONTAL_DIVIDER = "---"
+
 
 def show_board_in_cmd(board):
     """ shows the board in the cmd """
-    for index, row in enumerate(board.rows):
-        for cell_index, cell in enumerate(row):
-            print(" " + str(cell.value if cell.value != 0 else "_") + " ", end="")
+    for cell in board.cells:
+        cell_display = cell.value if cell.value != 0 else "_"
+        print(f" {cell_display} ", end="")
 
-            if (cell_index + 1) % 3 == 0 and cell_index + 1 is not board.size:
-                print("|", end="")
-
-        print()
-
-        if (index + 1) % 3 == 0 and index + 1 is not board.size:
-            for i in range(board.size):
-                print("---", end="")
-                if(i + 1) % 3 == 0 and i + 1 is not board.size:
-                    print("|", end="")
+        if cell.pos_horizontal == board.size and cell.pos_vertical % board.square_size == 0:
             print()
+            print(*[board.square_size *
+                    HORIZONTAL_DIVIDER for i in range(board.square_count)], sep="|")
+
+        elif cell.pos_horizontal % board.size == 0:
+            print()
+
+        elif cell.pos_horizontal % board.square_size == 0:
+            print("|", end="")
 
 
 if __name__ == "__main__":
