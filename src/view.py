@@ -1,6 +1,9 @@
-""" Visualization of a board"""
+""" Visualization of a board """
+
+import time
 
 from generator import generate_board
+from solver import solve_board
 
 VERTICAL_DIVIDER = "|"
 HORIZONTAL_DIVIDER = "---"
@@ -8,6 +11,7 @@ HORIZONTAL_DIVIDER = "---"
 
 def show_board_in_cmd(board):
     """ shows the board in the cmd """
+
     for cell in board.cells:
         cell_display = cell.value if cell.value != 0 else "_"
         print(f" {cell_display} ", end="")
@@ -24,5 +28,13 @@ def show_board_in_cmd(board):
             print("|", end="")
 
 
+def display_solving_process(board):
+    """ solves the sudoku and shows every step """
+    for step in solve_board(board):
+        show_board_in_cmd(step)
+        print()
+        time.sleep(0.5)
+
+
 if __name__ == "__main__":
-    show_board_in_cmd(generate_board())
+    display_solving_process(generate_board())
