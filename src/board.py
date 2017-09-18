@@ -14,6 +14,11 @@ class Board:
                       for i in range(size * size)]
 
     @property
+    def possibilities(self):
+        """ returns all the possible numbers on this board """
+        return [i + 1 for i in range(self.size)]
+
+    @property
     def rows(self):
         """ returns the cells grouped by rows """
         rows = {i + 1: [] for i in range(self.size)}
