@@ -7,21 +7,32 @@ from board import Board
 
 def solve_board(board: Board):
     """ solves a board """
+    solving_order = OrderedDict({
+        "Almost full groups": solve_by_almost_full_groups,
+        "Most occuring number": solve_by_most_occuring_number
+    })
+
+    set_cell_count = 0
+
     while not is_solved(board):
         yield board
-
-        if solve_by_almost_full_groups(board):
-            continue
-
-        distribution = get_number_distribution(board)
-
-        for number in distribution.keys():
-            if solve_by_number(board, number):
+        for method, solver in solving_order.items():
+            set_cell = solver(board)
+            if set_cell is not None:
+                print_solving_result(set_cell, method)
+                set_cell_count += 1
                 break
+        else:
+            print("No more cells can be set")
+            print(f"Managed to set {set_cell_count} cell(s)")
+            print(f"{len(get_empty_cells(board.cells))} cell(s) remain unset")
+
+            break
 
 
 def solve_by_almost_full_groups(board):
     """ trys to solve the board by filling almost full groups """
+    set_cell = None
 
     to_ceck = list(
         board.rows.values()) +\
@@ -30,26 +41,44 @@ def solve_by_almost_full_groups(board):
 
     for cell_group in to_ceck:
         empty_cells = get_empty_cells(cell_group)
+
         if len(empty_cells) == 1:
             empty_cells[0].value = get_unused_numbers(board, cell_group)[0]
-            print_solving_result(empty_cells[0], "almost full groups")
-            return True
+            set_cell = empty_cells[0]
+            break
+
+    return set_cell
+
+
+def solve_by_most_occuring_number(board):
+    """ trys to solve the sudoku by checkingpossible positions for the most occuring numbers """
+    distribution = get_number_distribution(board)
+    set_cell = None
+
+    for number in distribution.keys():
+        set_cell = solve_by_number(board, number)
+        if set_cell is not None:
+            break
+
+    return set_cell
 
 
 def solve_by_number(board, number):
-    """ trys to solve the sudoku by checking for possible positions for the given number """
+    """ trys to place the given number for a cell """
     squares = get_squares_without_number(board, number)
+    set_cell = None
+
     for square in squares:
         empty_cells = get_empty_cells(square)
-        posibilities = [cell for cell in empty_cells if could_cell_contain(cell, number)]
+        posibilities = [
+            cell for cell in empty_cells if could_cell_contain(cell, number)]
 
         if len(posibilities) == 1:
             posibilities[0].value = number
+            set_cell = posibilities[0]
+            break
 
-            print_solving_result(posibilities[0], "most used numbers")
-            return True
-
-    return False
+    return set_cell
 
 
 def get_squares_without_number(board, number):

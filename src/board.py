@@ -2,7 +2,6 @@
 
 import math
 
-
 class Board:
     """ A Sudoku-board """
 
@@ -12,6 +11,15 @@ class Board:
         self.square_count = size // self.square_size
         self.cells = [Cell(self, 0, i % size + 1, (i // size) + 1)
                       for i in range(size * size)]
+
+    @classmethod
+    def by_cell_array(cls, cell_array):
+        """ sets up a board by a cell array """
+        board = cls()
+        for value, cell in zip(cell_array, board.cells):
+            cell.value = value
+        
+        return board
 
     @property
     def possibilities(self):
