@@ -5,6 +5,15 @@ from collections import OrderedDict
 from board import Board
 
 
+def is_solved(board):
+    """ checks if a board is solved """
+    for cell in board.cells:
+        if cell.value == 0:
+            return False
+
+    return True
+
+
 def solve_board(board: Board):
     """ solves a board """
     solving_order = OrderedDict({
@@ -23,11 +32,10 @@ def solve_board(board: Board):
                 set_cell_count += 1
                 break
         else:
-            print("No more cells can be set")
-            print(f"Managed to set {set_cell_count} cell(s)")
-            print(f"{len(get_empty_cells(board.cells))} cell(s) remain unset")
-
+            print_defeat_message(board, set_cell_count)
             break
+    else:
+        print_victory_message(set_cell_count)
 
 
 def solve_by_almost_full_groups(board):
@@ -127,15 +135,19 @@ def get_number_distribution(board):
     return OrderedDict(sorted(distribution.items(), key=lambda t: t[1], reverse=True))
 
 
+def print_defeat_message(board, set_cell_count):
+    """ admits defeat but prints accomplishments """
+    print("no more cells can be set")
+    print(f"managed to set {set_cell_count} cell(s)")
+    print(f"{len(get_empty_cells(board.cells))} cell(s) remain unset")
+
+
+def print_victory_message(set_cell_count):
+    """ declares victory and prints some facts """
+    print("all cells set!")
+    print(f"managed to set {set_cell_count} cell(s)")
+
+
 def print_solving_result(cell, method):
     """ log that and how a cell was filled """
     print(f"solved cell {cell.pos} with {cell.value} by {method}")
-
-
-def is_solved(board):
-    """ checks if a board is solved """
-    for cell in board.cells:
-        if cell.value == 0:
-            return False
-
-    return True

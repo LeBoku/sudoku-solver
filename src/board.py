@@ -18,7 +18,7 @@ class Board:
         board = cls()
         for value, cell in zip(cell_array, board.cells):
             cell.value = value
-        
+
         return board
 
     @property
