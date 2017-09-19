@@ -5,7 +5,7 @@ from collections import OrderedDict
 from board import Board
 
 
-def is_solved(board):
+def is_solved(board: Board):
     """ checks if a board is solved """
     for cell in board.cells:
         if cell.value == 0:
@@ -17,8 +17,9 @@ def is_solved(board):
 def solve_board(board: Board):
     """ solves a board """
     solving_order = OrderedDict({
-        "Almost full groups": solve_by_almost_full_groups,
-        "Most occuring number": solve_by_most_occuring_number
+        "almost full groups": solve_by_almost_full_groups,
+        "most occuring number": solve_by_most_occuring_number,
+        "implicit occupation": solve_by_implicit_occupation
     })
 
     set_cell_count = 0
@@ -38,7 +39,7 @@ def solve_board(board: Board):
         print_victory_message(set_cell_count)
 
 
-def solve_by_almost_full_groups(board):
+def solve_by_almost_full_groups(board: Board):
     """ trys to solve the board by filling almost full groups """
     set_cell = None
 
@@ -58,41 +59,118 @@ def solve_by_almost_full_groups(board):
     return set_cell
 
 
-def solve_by_most_occuring_number(board):
-    """ trys to solve the sudoku by checkingpossible positions for the most occuring numbers """
-    distribution = get_number_distribution(board)
+def solve_by_most_occuring_number(board: Board):
+    """ trys to solve the sudoku by checking possible positions for the most occuring numbers """
     set_cell = None
+    distribution = get_number_distribution(board)
 
     for number in distribution.keys():
-        set_cell = solve_by_number(board, number)
+        squares = get_groups_without_number(board.squares, number)
+
+        for square in squares:
+            empty_cells = get_empty_cells(square)
+            posibilities = [
+                cell for cell in empty_cells if could_cell_contain(cell, number)]
+
+            if len(posibilities) == 1:
+                posibilities[0].value = number
+                set_cell = posibilities[0]
+                break
+
         if set_cell is not None:
             break
 
     return set_cell
 
 
-def solve_by_number(board, number):
-    """ trys to place the given number for a cell """
-    squares = get_squares_without_number(board, number)
+def solve_by_implicit_occupation(board: Board):
+    """ trys to solve by implicit occupation """
     set_cell = None
+    distribution = get_number_distribution(board)
 
-    for square in squares:
-        empty_cells = get_empty_cells(square)
-        posibilities = [
-            cell for cell in empty_cells if could_cell_contain(cell, number)]
+    for number in distribution.keys():
+        number = 8
+        occupied_groups = dict(rows=[], columns=[], squares=[])
+        cells_groups_without_number = []
 
-        if len(posibilities) == 1:
-            posibilities[0].value = number
-            set_cell = posibilities[0]
+        group_types = dict(squares=board.squares,
+                           rows=board.rows,
+                           columns=board.columns)
+
+        for group_type_name, group_type in group_types.items():
+            for group in get_groups_without_number(group_type, number):
+                empty_cells = get_empty_cells(group)
+                possible_cells = [cell for cell in empty_cells
+                                  if could_cell_contain(cell, number)]
+
+                current_cell_group = dict(
+                    type=group_type_name, cells=possible_cells)
+                filter_cell_group(current_cell_group, occupied_groups)
+                # don't filter group by filters originated by it 
+
+                simularities = get_simularities_for_cells(possible_cells)
+
+                for simularity_type, group_index in simularities.items():
+                    if simularity_type is not group_type_name and group_index is not None:
+                        occupied_groups[simularity_type].append(group_index)
+
+                        for cell_group_without_number in cells_groups_without_number:
+                            filter_cell_group(
+                                cell_group_without_number, occupied_groups)
+                            # check for new occupied groups
+
+                cells_groups_without_number.append(current_cell_group)
+
+            for cell_group in cells_groups_without_number:
+                if len(cell_group["cells"]) == 1:
+                    set_cell = cell_group["cells"][0]
+                    set_cell.value = number
+                    break
+            
+            if set_cell:
+                break
+
+        if set_cell is not None:
             break
 
     return set_cell
 
 
-def get_squares_without_number(board, number):
+def filter_cell_group(cell_group, filters):
+    """ filter cells by rows, columns and squares """
+    filters = {name: value if name !=
+               cell_group["type"] else [] for name, value in filters.items()}
+
+    cell_group["cells"] = [cell for cell in cell_group["cells"]
+                           if not(cell.row_index in filters["rows"]
+                                  or cell.column_index in filters["columns"]
+                                  or cell.square_index in filters["squares"])]
+
+
+def get_simularities_for_cells(cells):
+    """ checks if all the cells have the same row and/or column and/or square """
+    first_cell = cells[0]
+
+    row = first_cell.row_index
+    column = first_cell.column_index
+    square = first_cell.square_index
+
+    for cell in cells[1:]:
+        if row != cell.row_index:
+            row = None
+
+        if column != cell.column_index:
+            column = None
+
+        if square != cell.square_index:
+            square = None
+
+    return dict(rows=row, columns=column, squares=square)
+
+
+def get_groups_without_number(groups, number):
     """ gets all sqares not containing the given number """
-    squares = board.squares
-    return [square for square in squares.values() if not are_cells_containing(square, number)]
+    return [group for group in groups.values() if not are_cells_containing(group, number)]
 
 
 def are_cells_containing(cells, number):

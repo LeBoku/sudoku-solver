@@ -2,6 +2,7 @@
 
 import math
 
+
 class Board:
     """ A Sudoku-board """
 
@@ -32,7 +33,7 @@ class Board:
         rows = {i + 1: [] for i in range(self.size)}
 
         for cell in self.cells:
-            rows[cell.pos_vertical].append(cell)
+            rows[cell.row_index].append(cell)
 
         return rows
 
@@ -42,14 +43,14 @@ class Board:
         columns = {i + 1: [] for i in range(self.size)}
 
         for cell in self.cells:
-            columns[cell.pos_horizontal].append(cell)
+            columns[cell.column_index].append(cell)
 
         return columns
 
     @property
     def squares(self):
         """ returns the cells grouped by squares """
-        squares = {(i // 3 + 1, i % 3 + 1): [] for i in range(self.size)}
+        squares = {(i % 3 + 1, i // 3 + 1): [] for i in range(self.size)}
 
         for cell in self.cells:
             squares[cell.square_index].append(cell)
@@ -66,12 +67,12 @@ class Cell:
         self.pos = x, y
 
     @property
-    def pos_vertical(self):
+    def row_index(self):
         """ vertical position of a cell """
         return self.pos[1]
 
     @property
-    def pos_horizontal(self):
+    def column_index(self):
         """ horizontal position of a cell """
         return self.pos[0]
 
@@ -83,12 +84,12 @@ class Cell:
     @property
     def row(self):
         """ row position of a cell """
-        return self.board.rows[self.pos_vertical]
+        return self.board.rows[self.row_index]
 
     @property
     def column(self):
         """ column position of a cell """
-        return self.board.columns[self.pos_horizontal]
+        return self.board.columns[self.column_index]
 
     @property
     def square(self):
