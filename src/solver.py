@@ -89,9 +89,8 @@ def solve_by_implicit_occupation(board: Board):
     distribution = get_number_distribution(board)
 
     for number in distribution.keys():
-        number = 8
-        occupied_groups = dict(rows=[], columns=[], squares=[])
-        cells_groups_without_number = []
+        occupied_cells = set()
+        groups_without_number = []
 
         group_types = dict(squares=board.squares,
                            rows=board.rows,
@@ -99,34 +98,21 @@ def solve_by_implicit_occupation(board: Board):
 
         for group_type_name, group_type in group_types.items():
             for group in get_groups_without_number(group_type, number):
-                empty_cells = get_empty_cells(group)
-                possible_cells = [cell for cell in empty_cells
+                possible_cells = get_empty_cells(group)
+                possible_cells = [cell for cell in possible_cells
                                   if could_cell_contain(cell, number)]
 
-                current_cell_group = dict(
-                    type=group_type_name, cells=possible_cells)
-                filter_cell_group(current_cell_group, occupied_groups)
-                # don't filter group by filters originated by it 
+                update_occupied_cells(
+                    board, occupied_cells, possible_cells, group_type_name, groups_without_number)
 
-                simularities = get_simularities_for_cells(possible_cells)
+                groups_without_number.append(possible_cells)
 
-                for simularity_type, group_index in simularities.items():
-                    if simularity_type is not group_type_name and group_index is not None:
-                        occupied_groups[simularity_type].append(group_index)
-
-                        for cell_group_without_number in cells_groups_without_number:
-                            filter_cell_group(
-                                cell_group_without_number, occupied_groups)
-                            # check for new occupied groups
-
-                cells_groups_without_number.append(current_cell_group)
-
-            for cell_group in cells_groups_without_number:
-                if len(cell_group["cells"]) == 1:
-                    set_cell = cell_group["cells"][0]
+            for cell_group in groups_without_number:
+                if len(cell_group) == 1:
+                    set_cell = cell_group[0]
                     set_cell.value = number
                     break
-            
+
             if set_cell:
                 break
 
@@ -136,15 +122,30 @@ def solve_by_implicit_occupation(board: Board):
     return set_cell
 
 
-def filter_cell_group(cell_group, filters):
-    """ filter cells by rows, columns and squares """
-    filters = {name: value if name !=
-               cell_group["type"] else [] for name, value in filters.items()}
+def update_occupied_cells(board, occupied_cells, cells, group_type, groups_without_number):
+    """ updates the occupied cells """
+    filter_cell_group(cells, occupied_cells)
+    newly_occupied = get_implicitly_occupied_cells(board, group_type, cells)
 
-    cell_group["cells"] = [cell for cell in cell_group["cells"]
-                           if not(cell.row_index in filters["rows"]
-                                  or cell.column_index in filters["columns"]
-                                  or cell.square_index in filters["squares"])]
+    if newly_occupied is not None:
+        occupied_cells.update(newly_occupied)
+        for group_without_number in groups_without_number:
+            filter_cell_group(group_without_number, occupied_cells)
+
+
+def get_implicitly_occupied_cells(board, group_type, cells):
+    """ adds occupied cells if possible """
+    simularities = get_simularities_for_cells(cells)
+
+    for simularity_type, group_index in simularities.items():
+        if simularity_type is not group_type and group_index is not None:
+            affected_cell_group = getattr(board, simularity_type)[group_index]
+            return [cell for cell in affected_cell_group if cell not in cells]
+
+
+def filter_cell_group(cell_group, filter_cells):
+    """ filter cells by the given filter_cells """
+    cell_group[:] = [cell for cell in cell_group if cell not in filter_cells]
 
 
 def get_simularities_for_cells(cells):
