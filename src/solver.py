@@ -1,17 +1,8 @@
-""" solves a board"""
+""" solves a board """
 
 from collections import OrderedDict
 
 from board import Board
-
-
-def is_solved(board: Board):
-    """ checks if a board is solved """
-    for cell in board.cells:
-        if cell.value == 0:
-            return False
-
-    return True
 
 
 def solve_board(board: Board):
@@ -24,7 +15,7 @@ def solve_board(board: Board):
 
     set_cell_count = 0
 
-    while not is_solved(board):
+    while not board.is_solved():
         yield board
         for method, solver in solving_order.items():
             set_cell = solver(board)
@@ -62,7 +53,7 @@ def solve_by_almost_full_groups(board: Board):
 def solve_by_most_occuring_number(board: Board):
     """ trys to solve the sudoku by checking possible positions for the most occuring numbers """
     set_cell = None
-    distribution = get_number_distribution(board)
+    distribution = board.get_number_distribution()
 
     for number in distribution.keys():
         squares = get_groups_without_number(board.squares, number)
@@ -86,7 +77,7 @@ def solve_by_most_occuring_number(board: Board):
 def solve_by_implicit_occupation(board: Board):
     """ trys to solve by implicit occupation """
     set_cell = None
-    distribution = get_number_distribution(board)
+    distribution = board.get_number_distribution()
 
     for number in distribution.keys():
         occupied_cells = set()
@@ -198,20 +189,6 @@ def get_unused_numbers(board, cells):
             possibilities.remove(cell.value)
 
     return possibilities
-
-
-def get_number_distribution(board):
-    """ gets the occurence of all numbers on a board """
-    distribution = {i: 0 for i in range(board.size + 1)}
-
-    for cell in board.cells:
-        distribution[cell.value] += 1
-
-    distribution.pop(0)
-    distribution = {number: count for number,
-                    count in distribution.items() if count != board.size}
-
-    return OrderedDict(sorted(distribution.items(), key=lambda t: t[1], reverse=True))
 
 
 def print_defeat_message(board, set_cell_count):

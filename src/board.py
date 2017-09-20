@@ -1,6 +1,7 @@
 """ Classes to Represent the state of the Sudoku board """
 
 import math
+from collections import OrderedDict
 
 
 class Board:
@@ -57,6 +58,25 @@ class Board:
 
         return squares
 
+    def is_solved(self):
+        """ checks if a board is solved """
+        for cell in self.cells:
+            if cell.value == 0:
+                return False
+
+        return True
+    def get_number_distribution(self):
+        """ gets the occurence of all numbers on a board """
+        distribution = {number: 0 for number in self.possibilities}
+
+        for cell in self.cells:
+            if cell.value != 0:
+                distribution[cell.value] += 1
+
+        distribution = {number: count for number,
+                        count in distribution.items() if count != self.size}
+
+        return OrderedDict(sorted(distribution.items(), key=lambda t: t[1], reverse=True))
 
 class Cell:
     """ A Cell on a Sudoku Board """
