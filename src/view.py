@@ -47,5 +47,5 @@ def display_solving_process(board):
 if __name__ == "__main__":
     # display_solving_process(generate_board())
     # display_solving_process(Board.by_cell_array(test_boards.MEDIUM_BOARD_3))
-    display_solving_process(Board.by_cell_array(test_boards.HARDEST_BOARD_2))
-    # display_solving_process(Board.by_cell_array(test_boards.HARDEST_BOARD))
+    # display_solving_process(Board.by_cell_array(test_boards.HARDEST_BOARD_2))
+    display_solving_process(Board.by_cell_array(test_boards.HARDEST_BOARD))
