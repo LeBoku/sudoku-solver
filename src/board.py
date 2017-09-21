@@ -66,6 +66,14 @@ class Board:
 
         return True
 
+    def is_valid(self):
+        """ validates the board """
+        for cell in self.cells:
+            if not cell.could_contain(cell.value):
+                return False
+
+        return True
+
     def get_number_distribution(self):
         """ gets the occurence of all numbers on a board """
         distribution = {number: 0 for number in self.possibilities}
@@ -90,7 +98,8 @@ class Cell:
 
     def could_contain(self, number):
         """ checks if a cell could contain """
-        return not any([cell for cell in self.row + self.column + self.square if cell.value == number])
+        return not any([cell for cell in self.row + self.column + self.square
+                        if cell is not self and cell.value == number])
 
     def get_possible_numbers(self):
         """ gets all the numbers that could be contained in this cell """

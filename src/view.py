@@ -38,10 +38,13 @@ def display_solving_process(board):
     for step in solve_board(board):
         show_board_in_cmd(step)
         print()
-        # time.sleep(0.5)
+        time.sleep(0.5)
 
-    print("final state:")
-    show_board_in_cmd(board)
+    if board.is_valid():
+        print("final state:")
+        show_board_in_cmd(board)
+    else:
+        print("BUT IT'S WRONG! :(")
 
 
 if __name__ == "__main__":
