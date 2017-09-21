@@ -22,31 +22,34 @@ def solve_board(board: Board):
             set_cell = solver.solve()
             if set_cell is not None:
                 print_solving_result(set_cell, solver.solving_method)
+                solver.solved_cells_count += 1
                 set_cell_count += 1
                 break
         else:
-            print_defeat_message(board, set_cell_count)
+            print_defeat_message(board)
             break
     else:
-        print_victory_message(set_cell_count)
+        print_victory_message()
+
+    print_stats(set_cell_count, solvers)
 
 
-def get_empty_cells(cells):
-    """ gets all cells with the value of 0 """
-    return [cell for cell in cells if cell.value == 0]
+def print_stats(set_cell_count, solvers):
+    """ prints stats about the current state of the solving process """
+    print(f"managed to set {set_cell_count} cell(s)")
+    for solver in solvers:
+        print(f"{solver.solved_cells_count} set by {solver.solving_method}")
 
 
-def print_defeat_message(board, set_cell_count):
+def print_defeat_message(board):
     """ admits defeat but prints accomplishments """
     print("no more cells can be set")
-    print(f"managed to set {set_cell_count} cell(s)")
-    print(f"{len(get_empty_cells(board.cells))} cell(s) remain unset")
+    print(f"{len(board.get_empty_cells())} cell(s) remain unset")
 
 
-def print_victory_message(set_cell_count):
+def print_victory_message():
     """ declares victory and prints some facts """
     print("all cells set!")
-    print(f"managed to set {set_cell_count} cell(s)")
 
 
 def print_solving_result(cell, method):

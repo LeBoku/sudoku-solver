@@ -58,6 +58,10 @@ class Board:
 
         return squares
 
+    def get_empty_cells(self):
+        """ returns all the empty cells on the board """
+        return [cell for cell in self.cells if cell.value == 0]
+
     def is_solved(self):
         """ checks if a board is solved """
         for cell in self.cells:

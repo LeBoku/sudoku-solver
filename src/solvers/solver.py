@@ -9,6 +9,7 @@ class Solver:
         self.set_cell_count = 0
         self.solving_method = ""
         self.board = board
+        self.solved_cells_count = 0
 
     def solve(self):
         """ trys to solve the board """
