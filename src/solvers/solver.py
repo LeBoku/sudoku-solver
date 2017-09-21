@@ -41,3 +41,13 @@ class Solver:
     def could_cell_contain(self, cell, number):
         """ checks if a cell could contain the given number """
         return not self.are_cells_containing(cell.row + cell.column + cell.square, number)
+
+    def get_possible_numbers(self, cells):
+        """ gets all the numbers witch could be in the given cells """
+        possible_numbers = set()
+
+        for cell in cells:
+            if cell.value == 0:
+                possible_numbers.update(cell.get_possible_numbers())
+
+        return possible_numbers

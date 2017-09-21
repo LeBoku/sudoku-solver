@@ -65,6 +65,7 @@ class Board:
                 return False
 
         return True
+
     def get_number_distribution(self):
         """ gets the occurence of all numbers on a board """
         distribution = {number: 0 for number in self.possibilities}
@@ -78,6 +79,7 @@ class Board:
 
         return OrderedDict(sorted(distribution.items(), key=lambda t: t[1], reverse=True))
 
+
 class Cell:
     """ A Cell on a Sudoku Board """
 
@@ -85,6 +87,14 @@ class Cell:
         self.board = board
         self.value = value
         self.pos = x, y
+
+    def could_contain(self, number):
+        """ checks if a cell could contain """
+        return not any([cell for cell in self.row + self.column + self.square if cell.value == number])
+
+    def get_possible_numbers(self):
+        """ gets all the numbers that could be contained in this cell """
+        return set([number for number in self.board.possibilities if self.could_contain(number)])
 
     @property
     def row_index(self):

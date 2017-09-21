@@ -1,7 +1,7 @@
 """ solves a board """
 
 from board import Board
-from solvers import AlmostFullGroupSolver, MostOccuringNumberSolver, ImplicitOccupationSolver
+from solvers import AlmostFullGroupSolver, MostOccuringNumberSolver, ImplicitOccupationSolver, ExclusionSolver
 
 
 def solve_board(board: Board):
@@ -10,7 +10,8 @@ def solve_board(board: Board):
     solvers = [
         AlmostFullGroupSolver(board),
         MostOccuringNumberSolver(board),
-        ImplicitOccupationSolver(board)
+        ImplicitOccupationSolver(board),
+        ExclusionSolver(board)
     ]
 
     set_cell_count = 0
