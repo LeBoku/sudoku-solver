@@ -1,6 +1,7 @@
 """ trys to solve by implicit occupation """
 
 from .solver import Solver
+IMPLICITLY_OCCUPIED_CELLS = {}
 
 
 class ImplicitOccupationSolver(Solver):
@@ -10,13 +11,16 @@ class ImplicitOccupationSolver(Solver):
         super().__init__(board)
         self.solving_method = "implicit occupation"
 
+        IMPLICITLY_OCCUPIED_CELLS.update({number: set()
+                                          for number in board.possibilities})
+
     def solve(self):
         """ trys to solve by implicit occupation """
         set_cell = None
         distribution = self.board.get_number_distribution()
 
         for number in distribution.keys():
-            occupied_cells = set()
+            occupied_cells = IMPLICITLY_OCCUPIED_CELLS[number]
             groups_without_number = []
 
             group_types = dict(squares=self.board.squares,

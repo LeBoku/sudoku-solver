@@ -73,8 +73,9 @@ class Board:
     def is_valid(self):
         """ validates the board """
         for cell in self.cells:
-            if not cell.could_contain(cell.value):
-                return False
+            if(cell.value != 0):
+                if not cell.could_contain(cell.value):
+                    return False
 
         return True
 

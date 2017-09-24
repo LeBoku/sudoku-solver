@@ -1,7 +1,7 @@
 """ trys to solve the board by exclusion """
 
 from .solver import Solver
-
+from .implicit_occupation_solver import IMPLICITLY_OCCUPIED_CELLS
 
 class ExclusionSolver(Solver):
     """ trys to solve the board by exclusion """
@@ -37,7 +37,8 @@ class ExclusionSolver(Solver):
 
         for cell in cells:
             for number in cell.get_possible_numbers():
-                number_possibilities[number].append(cell)
+                if cell not in IMPLICITLY_OCCUPIED_CELLS[number]:
+                    number_possibilities[number].append(cell)
 
         number_possibilities = {number: cells for number, cells in number_possibilities.items()
                                 if len(cells) >= 1}
