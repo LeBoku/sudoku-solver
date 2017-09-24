@@ -3,6 +3,7 @@
 from .solver import Solver
 from .implicit_occupation_solver import IMPLICITLY_OCCUPIED_CELLS
 
+
 class ExclusionSolver(Solver):
     """ trys to solve the board by exclusion """
 
@@ -32,29 +33,26 @@ class ExclusionSolver(Solver):
     def check_for_exclusion(self, cells):
         """ checks cells if any can be solved by exclusion """
         set_cell = None
-        number_possibilities = {number: []
-                                for number in self.board.possibilities}
+        cell_possibilities = {}
 
         for cell in cells:
+            cell_possibilities[cell] = []
             for number in cell.get_possible_numbers():
                 if cell not in IMPLICITLY_OCCUPIED_CELLS[number]:
-                    number_possibilities[number].append(cell)
-
-        number_possibilities = {number: cells for number, cells in number_possibilities.items()
-                                if len(cells) >= 1}
+                    cell_possibilities[cell].append(number)
 
         groups = []
 
-        if len(number_possibilities) > 2:
-            for number, cells in number_possibilities.items():
+        if len(cell_possibilities) > 2:
+            for cell, numbers in cell_possibilities.items():
                 for group in groups:
                     added_to_group = False
 
-                    for g_cells in group.values():
-                        overlapping_cells = [
-                            cell for cell in cells if cell in g_cells]
-                        if len(overlapping_cells) >= 1:
-                            group[number] = cells
+                    for group_numbers in group.values():
+                        overlapping_numbers = [
+                            number for number in numbers if number in group_numbers]
+                        if len(overlapping_numbers) >= 1:
+                            group[cell] = numbers
                             added_to_group = True
                             break
 
@@ -62,23 +60,23 @@ class ExclusionSolver(Solver):
                         break
 
                 else:
-                    groups.append({number: cells})
+                    groups.append({cell: numbers})
 
-            possible_groups = [group for group in groups if len(group) > 2]
+            possible_groups = [group for group in groups if all(
+                [len(numbers) >= len(group) - 1 for numbers in group.values()])]
 
             for group in possible_groups:
-                cell_references = {}
-                for number, cells in group.items():
-                    for cell in cells:
-                        if cell not in cell_references.keys():
-                            cell_references[cell] = []
-                        cell_references[cell].append(number)
+                for cell, numbers in group.items():
+                    for number in numbers:
+                        if all([number in group_numbers for group_numbers in group.items()]):
+                            for group_numbers in group.values():
+                                group_numbers.remove(number)
 
-                cell_references = {cell: references for cell, references in cell_references.items()
-                                   if len(references) == 1}
+                possible_groups = [group for group in possible_groups
+                                   if all(len(numbers) == 1 for numbers in group.values())]
 
-                if len(cell_references.keys()) == 1:
-                    set_cell, numbers = cell_references.popitem()
+                if len(possible_groups) >= 1:
+                    set_cell, numbers = possible_groups[0].popitem()
                     set_cell.value = numbers[0]
                     break
 
