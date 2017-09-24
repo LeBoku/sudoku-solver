@@ -38,7 +38,7 @@ def display_solving_process(board):
     for step in solve_board(board):
         show_board_in_cmd(step)
         print()
-        time.sleep(0.5)
+        # time.sleep(0.5)
 
     if board.is_valid():
         print("final state:")
@@ -49,8 +49,8 @@ def display_solving_process(board):
 
 if __name__ == "__main__":
     # display_solving_process(generate_board())
-    # display_solving_process(Board.by_cell_array(test_boards.MEDIUM_BOARD_3)) #yes
-    # display_solving_process(Board.by_cell_array(test_boards.HARDEST_BOARD)) #yes
-    # display_solving_process(Board.by_cell_array(test_boards.HARDEST_BOARD_2))
-    display_solving_process(Board.by_cell_array(test_boards.EVIL_BOARD))
-    # display_solving_process(Board.by_cell_array(test_boards.HARD_BOARD)) #yes
+    # display_solving_process(Board.from_cell_array(test_boards.MEDIUM_BOARD_3)) #yes
+    # display_solving_process(Board.from_cell_array(test_boards.HARDEST_BOARD)) #yes
+    display_solving_process(Board.from_cell_array(test_boards.HARDEST_BOARD_2))
+    # display_solving_process(Board.from_cell_array(test_boards.EVIL_BOARD)) #yes
+    # display_solving_process(Board.from_cell_array(test_boards.HARD_BOARD)) #yes

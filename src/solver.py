@@ -1,25 +1,41 @@
 """ solves a board """
 
 from board import Board
-from solvers import AlmostFullGroupSolver, MostOccuringNumberSolver, ImplicitOccupationSolver, ExclusionSolver
+from solvers import AlmostFullGroupSolver, \
+    MostOccuringNumberSolver, \
+    ImplicitOccupationSolver, \
+    ExclusionSolver, \
+    BruteForceSolver \
+
 
 
 def solve_board(board: Board):
     """ solves a board """
 
+    brute_force_solver = BruteForceSolver(board)
+
     solvers = [
         AlmostFullGroupSolver(board),
         MostOccuringNumberSolver(board),
         ImplicitOccupationSolver(board),
-        ExclusionSolver(board)
+        ExclusionSolver(board),
+        brute_force_solver
     ]
 
     set_cell_count = 0
 
     while not board.is_solved():
         yield board
+
         for solver in solvers:
-            set_cell = solver.solve()
+            set_cell = brute_force_solver.reset_if_needed()
+
+            if set_cell is None:
+                try:
+                    set_cell = solver.solve()
+                except IndexError:
+                    set_cell = brute_force_solver.reset_if_needed(False)
+
             if set_cell is not None:
                 print_solving_result(set_cell, solver.solving_method)
                 solver.solved_cells_count += 1
@@ -28,6 +44,7 @@ def solve_board(board: Board):
         else:
             print_defeat_message(board)
             break
+
     else:
         print_victory_message()
 
@@ -38,7 +55,7 @@ def print_stats(set_cell_count, solvers):
     """ prints stats about the current state of the solving process """
     print(f"managed to set {set_cell_count} cell(s)")
     for solver in solvers:
-        print(f"{solver.solved_cells_count} set by {solver.solving_method}")
+        solver.print_stats()
 
 
 def print_defeat_message(board):

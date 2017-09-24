@@ -15,13 +15,9 @@ class Board:
                       for i in range(size * size)]
 
     @classmethod
-    def by_cell_array(cls, cell_array):
-        """ sets up a board by a cell array """
-        board = cls()
-        for value, cell in zip(cell_array, board.cells):
-            cell.value = value
-
-        return board
+    def from_cell_array(cls, cell_array):
+        """ creates a new board from a cell array """
+        return cls().set_up_by_cell_array(cell_array)
 
     @property
     def possibilities(self):
@@ -58,6 +54,17 @@ class Board:
 
         return squares
 
+    def set_up_by_cell_array(self, cell_array):
+        """ sets up a board from a cell array """
+        for value, cell in zip(cell_array, self.cells):
+            cell.value = value
+
+        return self
+
+    def serialzie_to_cell_array(self):
+        """ serializes a board to a cell array """
+        return [cell.value for cell in self.cells]
+
     def get_empty_cells(self):
         """ returns all the empty cells on the board """
         return [cell for cell in self.cells if cell.value == 0]
@@ -73,7 +80,7 @@ class Board:
     def is_valid(self):
         """ validates the board """
         for cell in self.cells:
-            if(cell.value != 0):
+            if cell.value != 0:
                 if not cell.could_contain(cell.value):
                     return False
 

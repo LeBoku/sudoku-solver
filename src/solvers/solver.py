@@ -15,6 +15,10 @@ class Solver:
         """ trys to solve the board """
         raise NotImplementedError
 
+    def print_stats(self):
+        """ prints stats of the solving process with this solver """
+        print(f"{self.solved_cells_count} set by {self.solving_method}")
+
     def get_empty_cells(self, cells):
         """ gets all cells with the value of 0 """
         cells = cells if cells is not None else self.board.cells
