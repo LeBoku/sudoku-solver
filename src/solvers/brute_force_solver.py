@@ -8,7 +8,7 @@ from .solver import Solver
 from .implicit_occupation_solver import IMPLICITLY_OCCUPIED_CELLS
 
 GuessState = namedtuple(
-    "GuessState", ["frozen_board", "guesses"])
+    "GuessState", ["frozen_board", "cell", "guesses"])
 
 
 class BruteForceSolver(Solver):
@@ -33,39 +33,40 @@ class BruteForceSolver(Solver):
     def solve(self):
         """ trys to solve the board by strategically guessing """
         set_cell = None
+        cell = self.get_most_populated_square()[0]
 
-        state = GuessState(self.board.serialzie_to_cell_array(), {})
+        state = GuessState(self.board.serialzie_to_cell_array(), cell, set())
         self.guess_states.append(state)
 
-        set_cell = self.try_next_cell(state)
+        set_cell = self.try_next_number(state)
 
         return set_cell
 
-    def try_next_cell(self, state):
+    def get_most_populated_square(self):
+        """ get's the square with the most filled cells """
+
+        most_filled = [0] * self.board.size
+
+        for square in self.board.squares.values():
+            empty_cells = self.get_empty_cells(square)
+            empty_cells_count = len(empty_cells)
+            if len(most_filled) > empty_cells_count and empty_cells_count != 0:
+                most_filled = empty_cells
+
+        return most_filled
+
+    def try_next_number(self, state):
         """ trys the next possible number/cell """
         set_cell = None
 
-        cells_to_try = [cell for cell in self.board.get_empty_cells()
-                        if cell not in list(state.guesses.keys())[:-1]]
+        numbers_to_try = [number for number in state.cell.get_possible_numbers()
+                          if number not in state.guesses and state.cell not in IMPLICITLY_OCCUPIED_CELLS[number]]
 
-        for cell in cells_to_try:
-            if cell not in state.guesses.keys():
-                state.guesses[cell] = set()
-
-            tried_numbers = state.guesses[cell]
-
-            numbers_to_try = [number for number in cell.get_possible_numbers()
-                              if number not in tried_numbers]
-
-            for number in numbers_to_try:
-                tried_numbers.add(number)
-                if cell not in IMPLICITLY_OCCUPIED_CELLS[number]:
-                    cell.value = number
-                    set_cell = cell
-                    break
-
-            if set_cell is not None:
-                break
+        for number in numbers_to_try:
+            state.guesses.add(number)
+            state.cell.value = number
+            set_cell = state.cell
+            break
 
         return set_cell
 
@@ -78,16 +79,18 @@ class BruteForceSolver(Solver):
             return self.retry()
 
     def retry(self):
-        """ resets the board to the last correct state and then trys the next number/cell """
+        """ resets the board to the last correct state and then trys the next number """
         set_cell = None
         self.reset_count += 1
         self.reset_implicitly_occupied_cells()
 
         for state in reversed(self.guess_states):
             self.board.set_up_by_cell_array(state.frozen_board)
-            set_cell = self.try_next_cell(state)
+            set_cell = self.try_next_number(state)
 
-            if set_cell is not None:
+            if set_cell is None:
+                self.guess_states.remove(state)
+            else:
                 break
 
         return set_cell
