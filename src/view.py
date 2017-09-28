@@ -33,12 +33,12 @@ def show_board_in_cmd(board):
             print("|", end="")
 
 
-def display_solving_process(board):
+def display_solving(board, step_delay=0.5):
     """ solves the sudoku and shows every step """
     for step in solve_board(board):
         show_board_in_cmd(step)
         print()
-        # time.sleep(0.5)
+        time.sleep(step_delay)
 
     if board.is_valid():
         print("final state:")
@@ -48,9 +48,15 @@ def display_solving_process(board):
 
 
 if __name__ == "__main__":
-    # display_solving_process(generate_board())
-    # display_solving_process(Board.from_cell_array(test_boards.MEDIUM_BOARD_3)) #yes
-    # display_solving_process(Board.from_cell_array(test_boards.HARDEST_BOARD)) #yes
-    display_solving_process(Board.from_cell_array(test_boards.HARDEST_BOARD_2))
-    # display_solving_process(Board.from_cell_array(test_boards.EVIL_BOARD)) #yes
-    # display_solving_process(Board.from_cell_array(test_boards.HARD_BOARD)) #yes
+    display_solving(generate_board()) # solved
+    input("\n\npress any key continue with the next board...")
+    display_solving(Board.from_cell_array(test_boards.MEDIUM_BOARD_3))  # solved
+    input("\n\npress any key continue with the next board...")
+    display_solving(Board.from_cell_array(test_boards.HARDEST_BOARD))  # solved
+    input("\n\npress any key continue with the next board...")
+    display_solving(Board.from_cell_array(test_boards.EVIL_BOARD))  # solved
+    input("\n\npress any key continue with the next board...")
+    display_solving(Board.from_cell_array(test_boards.HARD_BOARD))  # solved
+    input("\n\npress any key continue with the next board...")
+    display_solving(Board.from_cell_array(test_boards.HARDEST_BOARD_2), 0)  # solved
+    print("\n\nall test boards solved")
