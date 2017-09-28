@@ -1,4 +1,24 @@
-""" trys to solve by implicit occupation """
+""" trys to solve by implicit occupation 
+an example for 'implicit occupation'
+x = some value
+ 
+ x 1 _ | _ _ _ | _ _ _ 
+ _ x _ | _ x x | _ x _ 
+ x x _ | _ x x | x _ x 
+-------|-------|-------
+ _ _ x | _ _ _ | _ x _ 
+ _ _ _ | _ _ x | _ x _ 
+ x _ x | _ x _ | x _ x 
+-------|-------|-------
+ x _ _ | _ x x | _ _ _ 
+ _ x _ | _ x x | _ _ _ 
+ _ _ _ | _ x _ | x _ x 
+...
+
+number 1 in the 2nd square has to be in the 4th column as it can't be in the first row
+this means that the 4th column is 'implicitly occupied'
+cell(x=7, y=9) could be solved with number 1 as all other cells in its square are implicitly occupied
+"""
 
 from .solver import Solver
 IMPLICITLY_OCCUPIED_CELLS = {}

@@ -48,15 +48,33 @@ def display_solving(board, step_delay=0.5):
 
 
 if __name__ == "__main__":
-    display_solving(generate_board()) # solved
+    display_solving(Board.from_cell_array(test_boards.EASY_BOARD))  # solved
     input("\n\npress any key continue with the next board...")
-    display_solving(Board.from_cell_array(test_boards.MEDIUM_BOARD_3))  # solved
+
+    display_solving(Board.from_cell_array(test_boards.MEDIUM_BOARD))  # solved
     input("\n\npress any key continue with the next board...")
-    display_solving(Board.from_cell_array(test_boards.HARDEST_BOARD))  # solved
+
+    display_solving(Board.from_cell_array(
+        test_boards.MEDIUM_BOARD_2))  # solved
     input("\n\npress any key continue with the next board...")
-    display_solving(Board.from_cell_array(test_boards.EVIL_BOARD))  # solved
+
+    display_solving(Board.from_cell_array(
+        test_boards.MEDIUM_BOARD_3))  # solved
     input("\n\npress any key continue with the next board...")
+
     display_solving(Board.from_cell_array(test_boards.HARD_BOARD))  # solved
     input("\n\npress any key continue with the next board...")
-    display_solving(Board.from_cell_array(test_boards.HARDEST_BOARD_2), 0)  # solved
+
+    display_solving(Board.from_cell_array(test_boards.HARDEST_BOARD))  # solved
+    input("\n\npress any key continue with the next board...")
+
+    display_solving(Board.from_cell_array(test_boards.EVIL_BOARD))  # solved
+    input("\n\npress any key continue with the next board...")
+
+    display_solving(Board.from_cell_array(
+        test_boards.HARDEST_BOARD_2), 0)  # solved
+    input("\n\npress any key continue with the next board...")
+
+    display_solving(generate_board())  # solved
+
     print("\n\nall test boards solved")
