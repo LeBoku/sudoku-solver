@@ -1,4 +1,7 @@
-""" trys to solve the board by filling almost full groups """
+""" trys to solve the board by filling almost full groups
+'almost full groups' means rows/columns/squares with 8 out of 9 cells filled
+the last one can then be set by checking which number is missing
+"""
 
 from .solver import Solver
 

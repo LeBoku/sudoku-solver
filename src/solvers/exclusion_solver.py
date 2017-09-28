@@ -1,4 +1,13 @@
-""" trys to solve the board by exclusion """
+""" trys to solve the board by exclusion 
+an example for 'exclusion':
+
+cell1-possibilities = [1, 2] 
+cell2-possibilities = [1, 2] 
+cell3-possibilities = [1, 2, 3]
+all other cells in the group are either full or couldn't be filled with 1, 2 or 3
+
+in such a scenario number 3 will always be in cell3 as cell1 and cell2 have to contain either 1 or 2
+"""
 
 from .solver import Solver
 from .implicit_occupation_solver import IMPLICITLY_OCCUPIED_CELLS

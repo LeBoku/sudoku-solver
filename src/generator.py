@@ -5,7 +5,7 @@ from random import choice
 from board import Board
 
 
-def generate_board():
+def generate_board(values_to_remove_count=60):
     """ generates for boards """
     size = 9
     board = Board(size)
@@ -31,11 +31,12 @@ def generate_board():
         else:
             cells_to_fill.append(cell)
 
-            for filled_cell in [c for c in choice([cell.row, cell.column, cell.square]) if c.value != 0]:
+            for filled_cell in [c for c in choice([cell.row, cell.column, cell.square])
+                                if c.value != 0]:
                 filled_cell.value = 0
                 cells_to_fill.append(filled_cell)
 
-    remove_values(board, 40)
+    remove_values(board, values_to_remove_count)
 
     return board
 
