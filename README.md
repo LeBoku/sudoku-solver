@@ -1,6 +1,6 @@
 # sudoku-solver
-A python program that (badly) generates and then solves Sudokus
+A python program that generates and then solves Sudoku puzzles
 
-*"why?", you ask?*
+*"why?", you ask*
 
-*well, "why not!" I say*
+*well, "why not?" I answer*
